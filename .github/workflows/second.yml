@@ -1,17 +1,48 @@
-name: Second workflow
+name: check_if_version_updated
 
 on:
-    push:
-        branches: ["**"]
+    pull_request:
+        branches:
+          - main
+          - staging
+        types:
+          - opened
+          - synchronize
+          - reopened
     workflow_run:
         workflows: ["First workflow"]
-        types: [completed]
+        types: ["completed"]
 
 jobs:
-    build:
-        if: ${{ github.event.workflow_run.conclusion=='success' }}
+    check_version_updated:
         runs-on: ubuntu-latest
+        if: ${{ github.event.workflow_run.conclusion == 'success' }}
         steps:
-            -   name: "After the first workflow"
+            -   name: Checkout the PR branch
+                uses: actions/checkout@v4
+                with:
+                    fetch-depth: 2 # Fetches enough history to compare
+
+            -   name: Get current version from package.json
+                id: current_version
+                run: echo "CURRENT_VERSION=$(jq -r '.version' ./package.json)" >> $GITHUB_ENV
+
+            -   name: Checkout to base branch
                 run: |
-                    echo "After the first workflow HEllo world"
+                    git fetch origin ${{ github.base_ref }} --depth=1
+                    git checkout origin/${{ github.base_ref }} package.json
+
+            -   name: Get base branch version from package.json
+                id: base_version
+                run: echo "BASE_VERSION=$(jq -r '.version' ./package.json)" >> $GITHUB_ENV
+    
+            -   name: Compare versions
+                run: |
+                    echo "Current version: $CURRENT_VERSION"
+                    echo "Base version: $BASE_VERSION"
+                    if [ "$CURRENT_VERSION" == "$BASE_VERSION" ]; then
+                        echo "Version has not been updated. Failing workflow."
+                        exit 1
+                    else
+                        echo "Version is different. Proceeding."
+                    fi
