@@ -11,3 +11,5 @@ jobs:
         steps:
             -   name: Console log
                 run: echo "Hello, world!"
+            -    name: Sleep for 10 secs
+                run: sleep 5

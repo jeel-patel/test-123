@@ -4,7 +4,7 @@ on:
     push:
         branches: ["**"]
     workflow_run:
-        workflows: ["First workflow"]
+        workflows: [First workflow]
         types: [completed]
 
 jobs:
