@@ -1,0 +1,17 @@
+name: Second workflow
+
+on:
+    push:
+        branches: ["**"]
+    workflow_run:
+        workflows: ["First workflow"]
+        types: [completed]
+
+jobs:
+    build:
+        if: ${{ github.event.workflow_run.conclusion=='success' }}
+        runs-on: ubuntu-latest
+        steps:
+            -   name: "After the first workflow"
+                run: |
+                    echo "After the first workflow HEllo world"
