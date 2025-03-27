@@ -4,7 +4,6 @@ on:
     workflow_run:
         workflows: ["First workflow"]
         types: ["completed"]
-        branches: ["staging", "main"]
 
 jobs:
     check_version_updated:
