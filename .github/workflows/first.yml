@@ -17,3 +17,6 @@ jobs:
             -   name: Sleep for 10 secs
                 run: |
                   sleep 5
+    second-job:
+        uses: ./.github/workflows/second.yml
+        needs: first-job
