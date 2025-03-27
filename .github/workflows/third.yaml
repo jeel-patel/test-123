@@ -1,14 +1,10 @@
 name: Third workflow
 
 on:
-    pull_request:
-        branches:
-            - main
-        types:
-          - closed
     workflow_run:
         workflows: [check_if_version_updated]
         types: [completed]
+        branches: ["main", "staging"]
 
 jobs:
     build:
