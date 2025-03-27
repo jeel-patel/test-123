@@ -1,17 +1,20 @@
 name: Third workflow
 
 on:
-    push:
-        branches: ["**"]
+    pull_request:
+        branches:
+            - main
+        types:
+          - closed
     workflow_run:
-        workflows: [First workflow]
+        workflows: [check_if_version_updated]
         types: [completed]
 
 jobs:
     build:
-        if: ${{ github.event.workflow_run.conclusion=='success' }}
+        # if: ${{ github.event.workflow_run.conclusion=='success' }}
         runs-on: ubuntu-latest
         steps:
-            -   name: "After the first workflow"
+            -   name: "After the second workflow"
                 run: |
-                    echo "After the first workflow HEllo world"
+                    echo "After the first workflow HEllo world ${{ github.event.workflow_run.conclusion }}"
