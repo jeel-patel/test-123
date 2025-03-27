@@ -1,9 +1,13 @@
 name: First workflow
 
 on:
-    push:
+    pull_request:
         branches: ["**"]
-
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - edited
 jobs:
     first-job:
         runs-on: ubuntu-latest
